@@ -60,7 +60,10 @@ int main(int argc, char** args)
 				getline(cin, input);
 				if (input.compare("cancel") != 0)
 				{
-					outfile << "\n" << input << ":";
+					if(line.compare("") != 0)						//Not the first category in the file
+						outfile << "\n" << input << ":";
+					else
+						outfile << input << ":";					//Handles creating the first category
 					cout << "Type in scores one by one or as a comma separated list (1,2,3) or (1, 2, 3). Type \"end\" when finished. If switching days, start a new line and type \"|\"." << endl;
 					while (true)
 					{
@@ -74,12 +77,16 @@ int main(int argc, char** args)
 							string tempss;
 							while (getline(ss, tempss, ','))
 							{
-								if (isNumber(tempss))
+								if (!(tempss.compare("|") == 0 && isNumber(tempss.substr(0, tempss.length() - 1))))
 									outfile << tempss << ",";
-								else if (tempss.compare("|") == 0 && isNumber(tempss.substr(0, tempss.length() - 1)))
+								else
+									outfile << tempss;
+								/*if (isNumber(tempss))
+									outfile << tempss << ",";
+								else if ((tempss.compare(".") || tempss.compare("|") == 0) && isNumber(tempss.substr(0, tempss.length() - 1)))
 									outfile << tempss;
 								else
-									cout << "Your input contained non-numerical values (besides commas, spaces, and pipes (\"|\"). Input failed. If using a comma separated list, all values before the non-numerical value was inserted. Please start at the error." << endl;
+									cout << "Your input contained non-numerical values (besides commas, spaces, and pipes (\"|\"). Input failed. If using a comma separated list, all values before the non-numerical value was inserted. Please start at the error." << endl;*/
 							}
 						}
 						else
@@ -103,7 +110,7 @@ int main(int argc, char** args)
 				{
 					data.push_back(temp);
 				}
-				if (data[c - 1].back() != ',')
+				if (data[c - 1].back() != ',' && data[c - 1].back() != '|')
 					data[c - 1] += ",";
 				cout << "Type in scores one by one or as a comma separated list (1, 2, 3). Type \"end\" when finished. If switching days, start a new day and type \"|\"." << endl;
 				while (true)
@@ -118,12 +125,16 @@ int main(int argc, char** args)
 						string tempss;
 						while (getline(ss, tempss, ','))
 						{
-							if (isNumber(tempss))
+							if (!(tempss.compare("|") == 0 && isNumber(tempss.substr(0, tempss.length() - 1))))
+								data[c-1] += tempss += ",";
+							else
+								data[c-1] += tempss;
+							/*if (isNumber(tempss))
 								data[c - 1] += tempss += ",";
-							else if (tempss.compare("|") == 0 && isNumber(tempss.substr(0, tempss.length() - 1)))
+							else if ((tempss.compare(".") == 0 || tempss.compare("|") == 0) && isNumber(tempss.substr(0, tempss.length() - 1)))
 								data[c - 1] += tempss;
 							else
-								cout << "Your input contained non-numerical values (besides commas, spaces, and pipes (\"|\"). Input failed. If using a comma separated list, all values before the non-numerical value was inserted. Please start at the error." << endl;
+								cout << "Your input contained non-numerical values (besides commas, spaces, and pipes (\"|\"). Input failed. If using a comma separated list, all values before the non-numerical value was inserted. Please start at the error." << endl;*/
 						}
 					}
 					else
@@ -199,11 +210,10 @@ int main(int argc, char** args)
 			vector<float> y;
 			for (unsigned int x = 0; x < avgs.size(); x++)
 				y.push_back(height - scaledavgs[x]);
-			
+
 			//Draw Graph
 
 			SDLInit();
-			cout << "Graph is being drawn.";
 			int xdif = width / (y.size() - 1);
 			int xcoord = 0;
 			for (unsigned int i = 0; i < y.size(); i++)
@@ -212,9 +222,16 @@ int main(int argc, char** args)
 				{
 					SDL_SetRenderDrawColor(r, 0, 255, 0, 255);
 					SDL_RenderDrawPoint(r, xcoord, (int)y[i]);
+					SDL_RenderDrawPoint(r, xcoord, (int)y[i] + 1);
+					SDL_RenderDrawPoint(r, xcoord, (int)y[i] + 2);
+
 					SDL_RenderDrawPoint(r, xcoord + 1, (int)y[i]);
 					SDL_RenderDrawPoint(r, xcoord + 1, (int)y[i] + 1);
-					SDL_RenderDrawPoint(r, xcoord, (int)y[i] + 1);
+					SDL_RenderDrawPoint(r, xcoord + 1, (int)y[i] + 2);
+
+					SDL_RenderDrawPoint(r, xcoord + 2, (int)y[i]);
+					SDL_RenderDrawPoint(r, xcoord + 2, (int)y[i] + 1);
+					SDL_RenderDrawPoint(r, xcoord + 2, (int)y[i] + 2);
 				}
 				else
 				{
@@ -266,7 +283,7 @@ int main(int argc, char** args)
 bool isNumber(string s)
 {
 	for (unsigned int i = 0; i < s.length(); i++)
-		if (isdigit(s[i]) == false || s[i] == ',')
+		if (isdigit(s[i]) == false || s[i] == ',' || s[i] == ',')
 			return false;
 
 	return true;
