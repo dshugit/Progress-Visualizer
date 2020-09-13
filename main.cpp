@@ -5,6 +5,8 @@
 #include <sstream>
 #include <SDL.h>
 
+#define path "D:\\data.txt"			//Edit the path here. Replace D:\\data.txt with your path.
+
 using namespace std;
 constexpr int width = 800;
 constexpr int height = 600;
@@ -27,9 +29,9 @@ int main(int argc, char** args)
 		else if (choice == 1)
 		{
 			ofstream outfile;
-			outfile.open("D:\\data.txt", ios::app);
+			outfile.open(path, ios::app);
 			ifstream infile;
-			infile.open("D:\\data.txt");
+			infile.open(path);
 
 			// Listing the current categories.
 			cout << "What category are you inputting scores for? (Enter the Number)" << endl;
@@ -95,7 +97,7 @@ int main(int argc, char** args)
 				//Go to the inputted line, and read in scores same as method above.
 				vector<string> data;
 				ifstream infile;
-				infile.open("D:\\data.txt");
+				infile.open(path);
 				string temp;
 				while (getline(infile, temp))
 				{
@@ -131,7 +133,7 @@ int main(int argc, char** args)
 					}
 				}
 				ofstream outfile;
-				outfile.open("D:\\data.txt");
+				outfile.open(path);
 				for (unsigned int i = 0; i < data.size() - 1; i++)
 					outfile << data[i] << endl;
 				outfile << data[data.size() - 1];
@@ -142,7 +144,7 @@ int main(int argc, char** args)
 		else if (choice == 2)
 		{
 			ifstream file;
-			file.open("D:\\data.txt");
+			file.open(path);
 			int count = 1;
 			string line;
 			while (getline(file, line))
@@ -155,7 +157,7 @@ int main(int argc, char** args)
 			int choice;
 			cin >> choice;
 			file.close();
-			file.open("D:\\data.txt");
+			file.open(path);
 			for (int i = 0; i < choice; i++)
 				getline(file, line);
 			int x = line.find(':');
@@ -167,7 +169,7 @@ int main(int argc, char** args)
 			while (getline(ss, tempss, '|'))
 				days.push_back(tempss);
 			for (unsigned int i = 0; i < days.size(); i++)
-				if (days[i].compare("") != 0)
+				if (days[i].compare("") == 0)
 					days.erase(days.begin()+i);
 			for (unsigned int i = 0; i < days.size(); i++)
 			{
